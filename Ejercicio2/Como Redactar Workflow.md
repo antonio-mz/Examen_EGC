@@ -18,6 +18,8 @@
    - [Ejemplo con servicios y matrix](#ejemplo-1-job-con-servicios-y-matrix)
    - [Ejemplo de dependencia entre jobs](#ejemplo-2-job-dependiente-con-needs)
    - [Ejemplo de configuración básica](#ejemplo-3-configuración-básica-de-un-job)
+   - [Ejemplo con `workflow_run` y despliegue por webhook](#ejemplo-4-job-con-workflow_run-y-webhook)
+   - [Ejemplo de publicación en Docker Hub](#ejemplo-5-publicación-en-docker-hub)
 5. [Resumen de secciones](#resumen-de-secciones)
 
 ---
@@ -303,6 +305,91 @@ jobs:
 **Explicación:**
 - Ejecuta comandos simples como imprimir mensajes y crear un archivo.
 - Ideal para ejemplos básicos o pruebas iniciales.
+
+---
+
+### **Ejemplo 4: Job con `workflow_run` y Webhook**
+```yaml
+on:
+  workflow_run:
+    workflows: 
+      - "Python Lint"
+      - "Run tests"
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Check lint and test results
+      run: |
+        if [ "${{ github.event.workflow_run.conclusion }}" != "success" ]; then
+          echo "Lint or Test workflow did not succeed. Exiting."
+          exit 1
+        fi
+
+    - name: Trigger Deployment Webhook
+      env:
+        WEBHOOK_DOMAIN: ${{ secrets.WEBHOOK_DOMAIN }}
+        WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
+      run: |
+        curl -X POST https://${{ secrets.WEBHOOK_DOMAIN }}/webhook/deploy -H "Authorization: Bearer ${{ secrets.WEBHOOK_TOKEN }}"
+```
+**Explicación:**
+- **`workflow_run`**: Este evento dispara el workflow tras la finalización de otros workflows especificados.
+- **Validación:** Asegura que los workflows previos ("Python Lint" y "Run tests") hayan terminado con éxito antes de proceder.
+- **Webhook:** Realiza un despliegue enviando una solicitud HTTP POST a un endpoint definido.
+
+---
+
+### **Ejemplo 5: Publicación en Docker Hub**
+```yaml
+name: Publish image in Docker Hub
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: docker build --build-arg VERSION_TAG=${{ github.event.release.tag_name }} -t drorganvidez/uvlhub:${{ github.event.release.tag_name }} -f docker/images/Dockerfile.prod .
+        env:
+          DOCKER_CLI_EXPERIMENTAL: enabled
+
+      - name: Push Docker image to Docker Hub
+        run: docker push drorganvidez/uvlhub:${{ github.event.release.tag_name }}
+
+      - name: Tag and push latest
+        run: |
+          docker tag drorganvidez/uvlhub:${{ github.event.release.tag_name }} drorganvidez/uvlhub:latest
+          docker push drorganvidez/uvlhub:latest
+        env:
+          DOCKER_CLI_EXPERIMENTAL: enabled
+```
+**Explicación:**
+- **Evento `release`**: Se activa cuando se publica una nueva release.
+- **Autenticación Docker Hub:** Usa secretos (`DOCKER_USER` y `DOCKER_PASSWORD`) para iniciar sesión.
+- **Construcción y push:** Crea una imagen Docker usando un `Dockerfile` y la etiqueta de la release como versión, y la sube a Docker Hub.
+- **Última etiqueta (`latest`)**: La imagen también se etiqueta como `latest` para mantener compatibilidad con consumidores de esa etiqueta estándar.
 
 ---
 
