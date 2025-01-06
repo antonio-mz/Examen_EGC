@@ -232,43 +232,71 @@ git push
 
 ## **5. Exercise Solutions**
 
-1. **Add a New User (`egc`)**:
-   - Modify Ansible configuration to create the user `egc` alongside `decide`.
-   - Commit and push:
+### 1. **Add a New User (`egc`)**
+   - Modify the Ansible configuration to create a new user `egc` alongside the existing `decide` user.
+   - Example of changes in `users.yml`:
+     ```yaml
+     - name: Create egc user
+       ansible.builtin.user:
+         name: egc
+         state: present
+         groups: sudo
+     ```
+   - Commit and push the changes:
      ```bash
      git commit -m "Add user egc to Ansible configuration"
      git push
      ```
 
-2. **Expose Port 8081 for DECIDE**:
-   - Update `Vagrantfile` to forward port **8081**.
-   - Commit and push:
+### 2. **Expose Port 8081 for DECIDE**
+   - Update the `Vagrantfile` to forward port **8081** from the VM to the host system.
+   - Example of changes in `Vagrantfile`:
+     ```ruby
+     config.vm.network "forwarded_port", guest: 8081, host: 8081
+     ```
+   - Commit and push the changes:
      ```bash
      git commit -m "Expose DECIDE on port 8081"
      git push
      ```
 
-3. **Create and Switch to Branch `vagrant`**:
-   - Use the command:
+### 3. **Create and Switch to Branch `vagrant`**
+   - Create a new branch named `vagrant` and switch to it:
      ```bash
      git checkout -b vagrant
      ```
 
-4. **Set Admin User (`adminexamen`)**:
-   - Update Ansible playbook to set admin user to `adminexamen`.
-   - Commit and push:
+### 4. **Set Admin User (`adminexamen`)**
+   - Update the Ansible playbook to set the admin user as `adminexamen` in the Vagrant environment.
+   - Example of changes in `users.yml`:
+     ```yaml
+     - name: Set DECIDE admin user
+       ansible.builtin.user:
+         name: adminexamen
+         state: present
+         groups: sudo
+     ```
+   - Commit and push the changes:
      ```bash
      git commit -m "Set admin user to adminexamen"
      git push
      ```
 
-5. **Configure VM Resources**:
-   - Modify `Vagrantfile` to allocate **4 CPUs** and **4 GB of RAM**.
-   - Commit and push:
+### 5. **Configure VM Resources**
+   - Modify the `Vagrantfile` to allocate **4 CPUs** and **4 GB of RAM** for the VM.
+   - Example of changes in `Vagrantfile`:
+     ```ruby
+     config.vm.provider "virtualbox" do |vb|
+       vb.memory = "4096"
+       vb.cpus = 4
+     end
+     ```
+   - Commit and push the changes:
      ```bash
      git commit -m "Set VM resources to 4 CPUs and 4GB RAM"
      git push
      ```
+
 
 ---
 
