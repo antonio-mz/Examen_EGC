@@ -1,4 +1,4 @@
-### Resumen: Configuración de Docker
+### Resumen: Configuración de Docker y Cambios Requeridos
 
 ---
 
@@ -57,4 +57,130 @@ Si se ha modificado algún archivo `Dockerfile` o `docker-compose.*.yml`, es nec
 ```bash
 docker compose -f docker/docker-compose.dev.yml up -d --build
 ```
+
+---
+
+### **Cambios Requeridos en Docker**
+
+---
+
+#### **1. Desactivar el modo DEBUG**
+Para garantizar que el modo `DEBUG` esté desactivado en despliegues de Docker:
+
+1. **Modificar el archivo `docker-compose.yml` o el correspondiente (`docker-compose.dev.yml`):**
+
+   Añade la variable de entorno `FLASK_DEBUG=False` (si usas Flask) o `DEBUG=False` (si usas Django) al servicio del contenedor:
+
+   ```yaml
+   services:
+     web:
+       build: .
+       environment:
+         - FLASK_DEBUG=False  # Si es Flask
+         - DEBUG=False        # Si es Django
+   ```
+
+2. **Reconstruir los contenedores:**
+
+   ```bash
+   docker compose -f docker/docker-compose.dev.yml up -d --build
+   ```
+
+3. **Verificar:**
+   Comprueba que el contenedor está corriendo y que `DEBUG` está desactivado:
+
+   ```bash
+   docker ps
+   ```
+
+4. **Hacer commit y push de los cambios:**
+
+   ```bash
+   git add docker-compose.dev.yml
+   git commit -m "Desactivar DEBUG para despliegues en Docker"
+   git push
+   ```
+
+---
+
+#### **2. Configurar 4 workers para Gunicorn**
+Para ajustar el número de workers de **Gunicorn** en el contenedor web:
+
+1. **Editar el archivo `docker-compose.yml`:**
+
+   Añade la configuración de Gunicorn al comando de inicio del servicio. Por ejemplo:
+
+   ```yaml
+   services:
+     web:
+       build: .
+       environment:
+         - FLASK_DEBUG=False
+       command: gunicorn -w 4 -b 0.0.0.0:5000 app:app  # Ajustar "app:app" según tu aplicación
+   ```
+
+2. **Reconstruir los contenedores:**
+
+   ```bash
+   docker compose -f docker/docker-compose.dev.yml up -d --build
+   ```
+
+3. **Verificar que Gunicorn está usando 4 workers:**
+
+   ```bash
+   docker logs <nombre_del_contenedor>
+   ```
+
+   Busca un mensaje que indique cuántos workers se están ejecutando.
+
+4. **Hacer commit y push de los cambios:**
+
+   ```bash
+   git add docker-compose.dev.yml
+   git commit -m "Configurar 4 workers de Gunicorn en Docker"
+   git push
+   ```
+
+---
+
+#### **3. Cambiar el puerto al 8003**
+Para cambiar el puerto en el cual se expone el servicio en Docker:
+
+1. **Editar el archivo `docker-compose.yml`:**
+
+   Cambia el mapeo de puertos en el servicio web:
+
+   ```yaml
+   services:
+     web:
+       build: .
+       ports:
+         - "8003:5000"  # 8003 será el puerto externo; 5000 es el puerto interno del contenedor
+   ```
+
+2. **Reconstruir y reiniciar los contenedores:**
+
+   ```bash
+   docker compose -f docker/docker-compose.dev.yml up -d --build
+   ```
+
+3. **Verificar:**
+   Abre el navegador en `http://localhost:8003` para comprobar que el servicio está disponible en el puerto correcto.
+
+4. **Hacer commit y push de los cambios:**
+
+   ```bash
+   git add docker-compose.dev.yml
+   git commit -m "Configurar puerto 8003 para servicio web en Docker"
+   git push
+   ```
+
+---
+
+### **Resumen Final**
+- **Desactivar DEBUG:** Añadir `FLASK_DEBUG=False` o `DEBUG=False` en las variables de entorno.
+- **Configurar Gunicorn:** Usar el comando `gunicorn -w 4 -b 0.0.0.0:5000`.
+- **Cambiar el puerto:** Actualizar `ports` a `8003:5000`.
+
+Recuerda realizar un `commit` y un `push` después de cada cambio para mantener un historial claro.
 
