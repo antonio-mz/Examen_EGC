@@ -20,3 +20,15 @@ cat id_rsa.pub
 ## Links utiles
 [Instalacion sistema](https://docs.uvlhub.io/installation/manual_installation)
 
+## Crear otra vez bd
+```bash
+sudo mysql -u root -p
+```
+```bash
+DROP DATABASE uvlhubdb;
+DROP DATABASE uvlhubdb_test;
+DROP USER 'uvlhubdb_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+```
+
