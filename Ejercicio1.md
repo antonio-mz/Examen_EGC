@@ -67,6 +67,10 @@
    ```
 📷 **Captura sugerida**: Pantalla mostrando la sincronización final.
 
+###### Subir rama remoto
+   ```bash
+git push -u origin <nombre-de-la-rama>
+   ```
 ---
 
 ### **2. Integrar cambios específicos con Cherry-Pick**
