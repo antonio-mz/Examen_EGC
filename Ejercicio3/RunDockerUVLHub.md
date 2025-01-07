@@ -2,6 +2,14 @@
 
 ---
 
+1. [Configurar archivos de entorno](#1-configurar-archivos-de-entorno)
+2. [Ejecutar los contenedores](#2-ejecutar-los-contenedores)
+3. [Verificar contenedores en ejecución](#3-verificar-contenedores-en-ejecución)
+4. [Detener los contenedores](#4-detener-los-contenedores)
+5. [Detener los contenedores (eliminando también los volúmenes)](#5-detener-los-contenedores-eliminando-también-los-volúmenes)
+6. [Recargar configuración](#6-recargar-configuración)
+7. [Posibles errores](#7-posibles-errores)
+
 #### **1. Configurar archivos de entorno**
 Primero, copia el archivo `.env.docker.example` al archivo `.env` que se usará para establecer las variables de entorno.
 
@@ -183,4 +191,12 @@ Para cambiar el puerto en el cual se expone el servicio en Docker:
 - **Cambiar el puerto:** Actualizar `ports` a `8003:5000`.
 
 Recuerda realizar un `commit` y un `push` después de cada cambio para mantener un historial claro.
+
+#### **7. Posibles errores**
+1. Puerto ya en uso: Error response from daemon: driver failed programming external connectivity on endpoint mariadb_container (d502ae05fd7776f78b7af1f4bf2e4ec4d0dfef53e53a37a97272bda49fe16d0f): failed to bind port 0.0.0.0:3306/tcp: Error starting userland proxy: listen tcp4 0.0.0.0:3306: bind: address already in use. Solución:
+   ```bash
+   sudo lsof -i :3306
+   sudo systemctl stop mysql (nombre del proceso en el puerto)
+   ```
+      o tambien se puede sudo kill PID
 
