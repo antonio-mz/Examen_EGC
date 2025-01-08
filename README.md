@@ -6,8 +6,11 @@ sudo apt install git
 
 ```bash
 git config --global user.name "<tu nombre y apellidos entrecomillados>"
-git config --global user.email <tu email>"
 ```
+```bash
+git config --global user.email "<tu email>"
+```
+
 
 ```bash
 ssh-keygen -t rsa -b 4096
