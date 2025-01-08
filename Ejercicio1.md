@@ -239,5 +239,10 @@ git commit --amend
 ```
 ---
 
+Hacer commit de lineas especificas
+```bash
+git add -p nombreArchivo
+```
+
 Con estas guías detalladas, puedes completar cada ejercicio con capturas que demuestran el progreso y los resultados.
 
