@@ -232,6 +232,11 @@ git push -u origin <nombre-de-la-rama>
      ```
 📷 **Captura sugerida**: Pantalla mostrando la resolución del conflicto.
 
+### Comandos basicos
+Cambiar nombre commit
+```bash
+git commit --amend
+```
 ---
 
 Con estas guías detalladas, puedes completar cada ejercicio con capturas que demuestran el progreso y los resultados.
