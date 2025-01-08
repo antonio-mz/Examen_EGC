@@ -244,5 +244,10 @@ Hacer commit de lineas especificas
 git add -p nombreArchivo
 ```
 
+Diferrencia entre .add y no stage
+```bash
+git diff --cached
+```
+
 Con estas guías detalladas, puedes completar cada ejercicio con capturas que demuestran el progreso y los resultados.
 
