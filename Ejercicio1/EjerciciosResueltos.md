@@ -48,6 +48,10 @@
    git add .
    git commit -m "Corrige error identificado en la issue #número"
    ```
+###### Subir rama remoto
+   ```bash
+git push -u origin <nombre-de-la-rama>
+   ```
 
 #### **5. Crear una Pull Request y fusionar los cambios**
 1. Sube los cambios al repositorio remoto:
@@ -67,10 +71,7 @@
    ```
 📷 **Captura sugerida**: Pantalla mostrando la sincronización final.
 
-###### Subir rama remoto
-   ```bash
-git push -u origin <nombre-de-la-rama>
-   ```
+
 ---
 
 ### **2. Integrar cambios específicos con Cherry-Pick**
