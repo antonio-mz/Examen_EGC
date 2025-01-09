@@ -116,6 +116,12 @@
 
 ## **Comandos avanzados**
 
+- **Fetch** (traer cambios remotos sin fusionarlos):
+  ```bash
+  git fetch
+  ```
+  Actualiza las referencias remotas locales con los cambios del repositorio remoto. No afecta la rama actual, permitiendo inspeccionar antes de fusionar.
+
 - **Cherry-pick** (aplicar un commit específico de otra rama):
   ```bash
   git cherry-pick <hash>
@@ -208,4 +214,3 @@
 
 5. **Revertir cambios accidentalmente eliminados**:
    - Usa `git revert` para reponer cambios perdidos sin alterar el historial general.
-
