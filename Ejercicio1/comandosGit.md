@@ -34,6 +34,15 @@
   git pull
   git push
   ```
+- **Hacer commit de lineas especificas**
+```bash
+git add -p nombreArchivo
+```
+
+- **Diferrencia entre .add y no stage**
+```bash
+git diff --cached
+```
 
 ---
 
