@@ -85,5 +85,34 @@ git push origin <branch>
 
 --- 
 
+Modifique el workflow django.yml para pasar las pruebas exclusivamente del módulo voting. 📷
+Prepare el workflow para que se ejecute cuando haya cambios únicamente en master/main. 📷
+Haga commit y push de los cambios realizados.
+Verifique el correcto funcionamiento del workflow. 
+- name: Run Tests
+  env:
+    FLASK_ENV: testing
+    MARIADB_HOSTNAME: 127.0.0.1
+    MARIADB_PORT: 3306
+    MARIADB_TEST_DATABASE: uvlhubdb_test
+    MARIADB_USER: uvlhub_user
+    MARIADB_PASSWORD: uvlhub_password
+  run: |
+    pytest app/modules/nombreModulo\
+      --ignore-glob='*selenium*'
+
+  Si quiero ignorar otro tipo de pruebas
+- name: Run Tests
+  env:
+    FLASK_ENV: testing
+    MARIADB_HOSTNAME: 127.0.0.1
+    MARIADB_PORT: 3306
+    MARIADB_TEST_DATABASE: uvlhubdb_test
+    MARIADB_USER: uvlhub_user
+    MARIADB_PASSWORD: uvlhub_password
+  run: |
+    pytest app/modules/ \
+      --ignore-glob='*selenium*' \
+      --ignore-glob='*unit*'
 **Notas:**  
 Este diseño garantiza modularidad, pruebas en entornos diversos y una mejor integración continua con herramientas externas como Codacy.
